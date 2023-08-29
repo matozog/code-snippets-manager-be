@@ -14,7 +14,7 @@ import java.util.Set;
 @EqualsAndHashCode(exclude = {"gitHubUsers", "tags", "categories", "idSnippet", "gist", "favorite"})
 @Getter
 @Setter
-@Table(name="CODE_SNIPPET")
+@Table(name = "CODE_SNIPPET")
 public class CodeSnippet implements Serializable {
 
     @Id
@@ -25,10 +25,10 @@ public class CodeSnippet implements Serializable {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "description")
+    @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
-    @Column(name = "content")
+    @Column(name = "content", columnDefinition = "TEXT")
     private String content;
 
     @Column(name = "favorite")
