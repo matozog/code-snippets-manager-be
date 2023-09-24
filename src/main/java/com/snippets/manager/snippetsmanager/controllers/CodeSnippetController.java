@@ -3,6 +3,7 @@ package com.snippets.manager.snippetsmanager.controllers;
 import com.snippets.manager.snippetsmanager.exception.SnippetNotFoundException;
 import com.snippets.manager.snippetsmanager.models.CodeSnippet;
 import com.snippets.manager.snippetsmanager.repositories.CodeSnippetRepository;
+import com.snippets.manager.snippetsmanager.services.CodesSnippetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +18,9 @@ public class CodeSnippetController {
     @Autowired
     private CodeSnippetRepository codeSnippetRepository;
 
+    @Autowired
+    private CodesSnippetService codesSnippetService;
+
     @GetMapping
     public Iterable findAll() {
         return codeSnippetRepository.findAll();
@@ -25,7 +29,7 @@ public class CodeSnippetController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CodeSnippet create(@RequestBody CodeSnippet codeSnippet) {
-        return codeSnippetRepository.save(codeSnippet);
+        return codesSnippetService.saveSnippet(codeSnippet);
     }
 
     @GetMapping("/title/{snippetTitle}")

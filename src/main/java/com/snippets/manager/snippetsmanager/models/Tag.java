@@ -1,5 +1,6 @@
 package com.snippets.manager.snippetsmanager.models;
 
+import com.fasterxml.jackson.annotation.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,7 +14,7 @@ import java.util.Set;
 @Entity
 @Getter
 @Setter
-@EqualsAndHashCode(exclude = {"codeSnippets","idTag"} )
+@EqualsAndHashCode(exclude = {"codeSnippets", "idTag"})
 @Table(name = "TAG")
 public class Tag implements Serializable {
 
@@ -22,15 +23,13 @@ public class Tag implements Serializable {
     @Column(name = "ID_TAG", nullable = false)
     private Long idTag;
 
-    @Column(name = "name")
+    @Column(name = "name", unique = true        )
     private String name;
 
     @Column(name = "added_date")
     private Date addedDate;
 
-    @ManyToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
-    @JoinTable(name="SNIPPET_TAG",
-            joinColumns={@JoinColumn(name="ID_TAG")},
-            inverseJoinColumns={@JoinColumn(name="ID_SNIPPET")})
+    @JsonIgnore
+    @ManyToMany(mappedBy = "tags", cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
     private Set<CodeSnippet> codeSnippets = new HashSet<>();
 }

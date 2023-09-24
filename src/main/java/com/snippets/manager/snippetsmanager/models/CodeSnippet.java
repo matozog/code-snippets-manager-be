@@ -1,5 +1,9 @@
 package com.snippets.manager.snippetsmanager.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -46,6 +50,9 @@ public class CodeSnippet implements Serializable {
     @Column(name = "added_date")
     private Date addedDate;
 
-    @ManyToMany(mappedBy = "codeSnippets", cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
+    @JoinTable(name = "SNIPPET_TAG",
+            joinColumns = {@JoinColumn(name = "ID_SNIPPET")},
+            inverseJoinColumns = {@JoinColumn(name = "ID_TAG")})
     private Set<Tag> tags = new HashSet<>();
 }
