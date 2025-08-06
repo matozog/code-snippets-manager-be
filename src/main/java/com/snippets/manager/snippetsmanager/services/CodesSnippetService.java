@@ -7,6 +7,7 @@ import com.snippets.manager.snippetsmanager.repositories.TagRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -21,7 +22,7 @@ public class CodesSnippetService {
     @Autowired
     private TagRepository tagRepository;
 
-
+    @Transactional
     public CodeSnippet saveSnippet(CodeSnippet codeSnippet) {
         System.out.println(codeSnippet);
         List<Tag> tags = tagRepository.findAll();

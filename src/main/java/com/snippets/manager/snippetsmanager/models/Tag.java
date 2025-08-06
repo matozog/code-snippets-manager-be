@@ -23,7 +23,7 @@ public class Tag implements Serializable {
     @Column(name = "ID_TAG", nullable = false)
     private Long idTag;
 
-    @Column(name = "name", unique = true        )
+    @Column(name = "name", unique = true)
     private String name;
 
     @Column(name = "added_date")
