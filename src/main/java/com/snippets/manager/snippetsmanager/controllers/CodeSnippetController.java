@@ -33,7 +33,7 @@ public class CodeSnippetController {
     }
 
     @GetMapping("/title/{snippetTitle}")
-    public List findByName(@PathVariable String bookTitle) {
+    public List<CodeSnippet> findByName(@PathVariable String bookTitle) {
         return codeSnippetRepository.findByName(bookTitle);
     }
 
@@ -51,9 +51,9 @@ public class CodeSnippetController {
     }
 
     @PutMapping("/{id}")
-    public CodeSnippet updateSnippet(@RequestBody CodeSnippet book, @PathVariable Long id) {
+    public CodeSnippet updateSnippet(@RequestBody CodeSnippet snippet, @PathVariable Long id) {
         codeSnippetRepository.findById(id)
                 .orElseThrow(SnippetNotFoundException::new);
-        return codeSnippetRepository.save(book);
+        return codesSnippetService.saveSnippet(snippet);
     }
 }
