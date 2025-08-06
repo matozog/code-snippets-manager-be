@@ -5,6 +5,8 @@ WORKDIR /app
 
 COPY .mvn/ .mvn
 COPY mvnw pom.xml ./
+COPY db.mv.db /db.mv.db
+
 RUN chmod +x ./mvnw
 RUN ./mvnw dependency:resolve
 
