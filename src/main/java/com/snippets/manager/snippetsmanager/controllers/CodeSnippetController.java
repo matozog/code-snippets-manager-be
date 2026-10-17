@@ -22,7 +22,7 @@ public class CodeSnippetController {
     private CodesSnippetService codesSnippetService;
 
     @GetMapping
-    public Iterable findAll() {
+    public Iterable<CodeSnippet> findAll() {
         return codeSnippetRepository.findAll();
     }
 
@@ -33,8 +33,8 @@ public class CodeSnippetController {
     }
 
     @GetMapping("/title/{snippetTitle}")
-    public List<CodeSnippet> findByName(@PathVariable String bookTitle) {
-        return codeSnippetRepository.findByName(bookTitle);
+    public List<CodeSnippet> findByName(@PathVariable String snippetTitle) {
+        return codeSnippetRepository.findByName(snippetTitle);
     }
 
     @GetMapping("/{id}")
@@ -54,6 +54,7 @@ public class CodeSnippetController {
     public CodeSnippet updateSnippet(@RequestBody CodeSnippet snippet, @PathVariable Long id) {
         codeSnippetRepository.findById(id)
                 .orElseThrow(SnippetNotFoundException::new);
+        snippet.setIdSnippet(id);
         return codesSnippetService.saveSnippet(snippet);
     }
 }

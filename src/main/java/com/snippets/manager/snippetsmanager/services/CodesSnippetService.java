@@ -7,10 +7,9 @@ import com.snippets.manager.snippetsmanager.repositories.TagRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
-import java.util.List;
-import java.util.Optional;
+import jakarta.transaction.Transactional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,12 +24,12 @@ public class CodesSnippetService {
     @Transactional
     public CodeSnippet saveSnippet(CodeSnippet codeSnippet) {
         System.out.println(codeSnippet);
-        List<Tag> tags = tagRepository.findAll();
-        Set<Tag> tagsAfterMapping = codeSnippet.getTags().stream().map(tag -> {
-            Optional<Tag> tagInDB = tags.stream().filter(tag1 -> tag1.getName().equals(tag.getName())).findFirst();
-            tagInDB.ifPresent(value -> tag.setIdTag(value.getIdTag()));
-            return tag;
-        }).collect(Collectors.toSet());
+        // one tag per name: duplicates from the request are merged, existing tags are reused
+        Set<Tag> tagsAfterMapping = codeSnippet.getTags().stream()
+                .collect(Collectors.toMap(Tag::getName, Function.identity(), (first, duplicate) -> first))
+                .values().stream()
+                .map(tag -> tagRepository.findByName(tag.getName()).orElse(tag))
+                .collect(Collectors.toSet());
         codeSnippet.setTags(tagsAfterMapping);
         return codeSnippetRepository.save(codeSnippet);
     }
