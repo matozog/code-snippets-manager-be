@@ -1,0 +1,17 @@
+# Local database for the dev profile; started automatically by Spring Boot (spring-boot-docker-compose).
+services:
+  postgres:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_DB: snippets
+      POSTGRES_USER: snippets
+      POSTGRES_PASSWORD: snippets
+    # non-default host port, so it does not clash with a locally installed Postgres
+    ports:
+      - "127.0.0.1:55432:5432"
+    # since Postgres 18 the image keeps data in a version-specific subdirectory of /var/lib/postgresql
+    volumes:
+      - postgres-data:/var/lib/postgresql
+
+volumes:
+  postgres-data:

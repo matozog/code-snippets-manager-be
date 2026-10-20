@@ -1,32 +1,28 @@
 package com.snippets.manager.snippetsmanager.models;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import lombok.EqualsAndHashCode;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.Hibernate;
 
-import javax.persistence.*;
-import java.io.Serializable;
-import java.util.Date;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
-@EqualsAndHashCode(exclude = {"gitHubUsers", "tags", "categories", "idSnippet", "gist", "favorite"})
 @Getter
 @Setter
 @Table(name = "CODE_SNIPPET")
-public class CodeSnippet implements Serializable {
+public class CodeSnippet {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID_SNIPPET", nullable = false)
     private Long idSnippet;
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     private String name;
 
     @Column(name = "description", columnDefinition = "TEXT")
@@ -48,11 +44,34 @@ public class CodeSnippet implements Serializable {
     private String addedFrom;
 
     @Column(name = "added_date")
-    private Date addedDate;
+    private Instant addedDate;
 
-    @ManyToMany(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "owner_id", nullable = false)
+    private AppUser owner;
+
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @JoinTable(name = "SNIPPET_TAG",
             joinColumns = {@JoinColumn(name = "ID_SNIPPET")},
             inverseJoinColumns = {@JoinColumn(name = "ID_TAG")})
     private Set<Tag> tags = new HashSet<>();
+
+    @PrePersist
+    void onCreate() {
+        // database keeps microseconds, so the value returned on create matches later reads
+        if (addedDate == null) addedDate = Instant.now().truncatedTo(ChronoUnit.MICROS);
+    }
+
+    @Override
+    public final boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        CodeSnippet other = (CodeSnippet) o;
+        return getIdSnippet() != null && Objects.equals(getIdSnippet(), other.getIdSnippet());
+    }
+
+    @Override
+    public final int hashCode() {
+        return Hibernate.getClass(this).hashCode();
+    }
 }
