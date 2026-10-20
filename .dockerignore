@@ -1,1 +1,6 @@
+.git
+.idea
+.vscode
 target
+*.db
+compose.yaml

@@ -7,9 +7,13 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Tags are private to their owner, so every query is scoped to the owner.
+ */
 @Repository
 public interface TagRepository extends CrudRepository<Tag, Long> {
-    List<Tag> findAll();
 
-    Optional<Tag> findByName(String name);
+    List<Tag> findAllByOwnerIdOrderByName(Long ownerId);
+
+    Optional<Tag> findByOwnerIdAndName(Long ownerId, String name);
 }
